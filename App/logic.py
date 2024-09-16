@@ -30,7 +30,7 @@ def json_prod_comp(filename):
             prod_comp = create_json(prod_comp['id'], prod_comp['name'])
     return prod_comp
 
-def new_logic():
+def new_logic(filename):
     """
     Crea el catalogo para almacenar las estructuras de datos
     """
@@ -57,8 +57,8 @@ def new_logic():
     catalog['vote_average'] = new_list()
     catalog['vote_count'] = new_list()
     catalog['budget'] = new_list()
-    catalog['genres'] = json_genre()
-    catalog['production_companies'] = json_prod_comp()
+    catalog['genres'] = json_genre(filename)
+    catalog['production_companies'] = json_prod_comp(filename)
     return catalog
 
 # Funciones para la carga de datos
@@ -67,6 +67,31 @@ def load_data(catalog, filename):
     """
     Carga los datos del reto
     """
+    diccionario = new_list()
+    diccionario["elements"] = None
+    diccionario["size"] = None
+    archivo=open(filename,"r",encoding="utf-8")
+    linea=archivo.readline()
+    while (len(linea))>0:
+      pelicula={}
+      pelicula["id"] = catalog['id'] 
+      pelicula["title"] = catalog['title']
+      pelicula["original_language"] = catalog['original_language']
+      pelicula["release_date"] = catalog['release_date']
+      pelicula["revenue"] = catalog['revenue']
+      pelicula["runtime"] = catalog['runtime']
+      pelicula["status"] = catalog['status']
+      pelicula["vote_average"] = catalog['vote_average']
+      pelicula["vote_count"] = catalog['vote_count']
+      pelicula["budget"] = catalog['budget']
+      pelicula["genres"] = catalog['genres']
+      pelicula["production_companies"] = catalog['production_companies']
+      diccionario['elements'].append(pelicula)
+      diccionario["size"] = len(diccionario['elements'])
+    archivo.close()
+    return diccionario
+    
+    
     
 
 # Funciones de consulta sobre el catálogo
@@ -75,16 +100,14 @@ def get_data(catalog, id):
     """
     Retorna un dato por su ID.
     """
-    #TODO: Consulta en las Llamar la función del modelo para obtener un dato
-    pass
+    return catalog[id]
 
 
-def req_1(catalog):
+def req_1(catalog, tm):
     """
     Retorna el resultado del requerimiento 1
     """
-    # TODO: Modificar el requerimiento 1
-    pass
+    
 
 
 def req_2(catalog):
