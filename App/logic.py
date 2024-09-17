@@ -30,7 +30,7 @@ def json_prod_comp(filename):
             prod_comp = create_json(prod_comp['id'], prod_comp['name'])
     return prod_comp
 
-def new_logic(filename):
+def new_logic():
     """
     Crea el catalogo para almacenar las estructuras de datos
     """
@@ -47,18 +47,6 @@ def new_logic(filename):
                'genres': None,
                'production_companies': None
                }
-    catalog['id'] = new_list()
-    catalog['title'] = new_list()
-    catalog['original_language'] = new_list()
-    catalog['release_date'] = new_list()
-    catalog['revenue'] = new_list()
-    catalog['runtime'] = new_list()
-    catalog['status'] = new_list()
-    catalog['vote_average'] = new_list()
-    catalog['vote_count'] = new_list()
-    catalog['budget'] = new_list()
-    catalog['genres'] = json_genre(filename)
-    catalog['production_companies'] = json_prod_comp(filename)
     return catalog
 
 # Funciones para la carga de datos
@@ -67,29 +55,60 @@ def load_data(catalog, filename):
     """
     Carga los datos del reto
     """
-    diccionario = new_list()
-    diccionario["elements"] = None
-    diccionario["size"] = None
-    archivo=open(filename,"r",encoding="utf-8")
-    linea=archivo.readline()
-    while (len(linea))>0:
-      pelicula={}
-      pelicula["id"] = catalog['id'] 
-      pelicula["title"] = catalog['title']
-      pelicula["original_language"] = catalog['original_language']
-      pelicula["release_date"] = catalog['release_date']
-      pelicula["revenue"] = catalog['revenue']
-      pelicula["runtime"] = catalog['runtime']
-      pelicula["status"] = catalog['status']
-      pelicula["vote_average"] = catalog['vote_average']
-      pelicula["vote_count"] = catalog['vote_count']
-      pelicula["budget"] = catalog['budget']
-      pelicula["genres"] = catalog['genres']
-      pelicula["production_companies"] = catalog['production_companies']
-      diccionario['elements'].append(pelicula)
-      diccionario["size"] = len(diccionario['elements'])
-    archivo.close()
-    return diccionario
+    with open(filename, mode ="r", encoding="utf-8") as archivo:
+        lector = csv.DictReader(archivo)
+        for pelicula in lector:
+            print(pelicula)
+            catalog["title"] = pelicula["title"]           
+            if pelicula["original_language"] == " ": 
+                catalog["title"]["original_language"] = "Desconocido"
+            else:
+                catalog["title"]["original_language"] = str(pelicula['original_language'])    
+            if pelicula["popularity"] == None:
+                catalog["title"]["popularity"] = "Desconocido"
+            else:
+                catalog["title"]["original_lenguage"] = pelicula['original_lenguage']   
+                
+            if pelicula["release_date"] == None:
+                catalog["title"]["release_date"] = "Desconocido"           
+            else:
+                catalog["title"]["release_date"] = pelicula["release_date"]
+                
+            if pelicula["revenue"] == None:
+                catalog["title"]["revenue"] = "Desconocido"           
+            else:
+                catalog["title"]["revenue"] = pelicula["revenue"]        
+                
+            if pelicula["runtime"] == None:
+                catalog["title"]["runtime"] = "Desconocido"           
+            else:
+                catalog["title"]["runtime"] = pelicula["runtime"]     
+                
+            if pelicula["status"] == None:
+                catalog["title"]["status"] = "Desconocido"           
+            else:
+                catalog["title"]["status"] = pelicula["status"]     
+        
+            if pelicula["vote_average"] == None:
+                catalog["title"]["vote_average"] = "Desconocido"           
+            else:
+                catalog["title"]["vote_average"] = pelicula["vote_average"]    
+                
+            if  pelicula["vote_count"] == None:
+                catalog["title"]["vote_count"] = "Desconocido"           
+            else:
+                catalog["title"]["vote_count"] = pelicula["vote_count"]   
+                
+            if pelicula["id"] == None:
+                catalog["title"]["id"] = "Desconocido"           
+            else:
+                catalog["title"]["id"] = pelicula["id"]   
+                        
+    return catalog
+
+print(load_data(new_logic(), "Data/movies-small.csv"))
+            
+        
     
     
     
