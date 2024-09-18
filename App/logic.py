@@ -1,33 +1,29 @@
-import os
-import sys
 import time
 import json
 import csv
+from DataStructures.Lists import Array_list as lt
 
 csv.field_size_limit(2147483647)
 
-from DataStructures.Lists import Array_list as lt
+movies = csv.DictReader(open('Data/movies-10.csv', encoding='utf-8'))
 
-data_dir = os.path.dirname(os.path.realpath('__file__')) + '/Data/'
-sys.path.append(os.path.abspath("DataStructures/Lists"))
-
-def create_json():
-    newgenre = {'id': None,
-                'name': None}
+def create_json(id, name):
+    newgenre = {'id': id,
+                'name': name}
     return newgenre
 
-def json_genre(filename):
-    movies = csv.DictReader(open(filename, encoding='utf-8'))
+def json_genre(movies):
+    movies = csv.DictReader(open('Data/movies-10.csv', 'r', encoding='utf-8'))
     for movie in movies:
         genres_list = json.loads(movie['genres'])
         for genre in genres_list:
             genre = create_json(genre['id'], genre['name'])
     return genre
 
-def json_prod_comp(filename):
-    movies = csv.DictReader(open(filename, encoding='utf-8'))
+def json_prod_comp(movies):
+    movies = csv.DictReader(open('Data/movies-10.csv', 'r', encoding='utf-8'))
     for movie in movies:
-        prod_comp_list = json.loads(movie['production_companie'])
+        prod_comp_list = json.loads(movie['production_companies'])
         for prod_comp in prod_comp_list:
             prod_comp = create_json(prod_comp['id'], prod_comp['name'])
     return prod_comp
@@ -37,25 +33,47 @@ def new_logic():
     Crea el catalogo para almacenar las estructuras de datos
     """
     catalog = lt.new_list()
-    return catalog
+    return catalog 
 
 # Funciones para la carga de datos
 
-catalogo = new_logic()
-
-def load_data(catalog, filename):
+def load_data(catalog, movies):
     """
     Carga los datos del reto
     """
-    with open(filename, mode = "r", encoding="utf-8") as archivo:
-        lector = csv.DictReader
-        for fila in lector:
-            print(fila)
-    return None
+    with open(movies, encoding='uft-8') as file:
+        movies_file = csv.DictReader(file)
+        for movie in movies_file:
+            id = movie.get('id', 'Desconocido')
+            title = movie.get('title', 'Desconocido')
+            org_language = movie.get('original_language', 'Desconocido')
+            release_date = movie.get('release_date', 'Desconocido')
+            revenue = movie.get('revenue', 'Desconocido')
+            runtime = movie.get('runtime', 'Desconocido')
+            status = movie.get('status', 'Desconocido')
+            vote_avg = movie.get('vote_average', 'Desconocido')
+            vote_count = movie.get('vote_count', 'Desconocido')
+            budget = movie.get('budget', 'Desconocido')
+            profit = revenue - budget
+            
+            movie_info = {
+                'id': id,
+                'title': title,
+                'original_language': org_language,
+                'release_date': release_date,
+                'revenue': revenue,
+                'runtime': runtime,
+                'status': status,
+                'vote_average': vote_avg,
+                'vote_count': vote_count,
+                'budget': budget,
+                'profit': profit,
+            }
+            lt.add_last(catalog, movie_info)
+    return catalog
 
-print(load_data(catalogo,"Data/movies-small.csv"))
-        
-    
+catalog = new_logic(movies)
+print(load_data(catalog, movies))
     
     
 
