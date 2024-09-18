@@ -1,10 +1,11 @@
-from DataStructures import Array_list as lt
+
 import time
 import json
 import csv
 
 csv.field_size_limit(2147483647)
 
+from DataStructures.Lists import Array_list as lt
 
 def create_json():
     newgenre = {'id': None,
@@ -36,6 +37,8 @@ def new_logic():
 
 # Funciones para la carga de datos
 
+catalogo = new_logic()
+
 def load_data(catalog, filename):
     """
     Carga los datos del reto
@@ -46,7 +49,7 @@ def load_data(catalog, filename):
             print(fila)
     return None
 
-print(load_data(new_logic(),"Data/movies-small.csv"))
+print(load_data(catalogo,"Data/movies-small.csv"))
         
     
     
