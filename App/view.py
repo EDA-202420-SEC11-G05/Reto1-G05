@@ -1,12 +1,14 @@
 import sys
-
+import App.logic as logic
+from DataStructures.Lists import Array_list as lt
+import os
 
 def new_logic():
     """
         Se crea una instancia del controlador
     """
-    #TODO: Llamar la función de la lógica donde se crean las estructuras de datos
-    pass
+    control = logic.new_logic()
+    return control
 
 def print_menu():
     print("Bienvenido")
@@ -25,16 +27,16 @@ def load_data(control):
     """
     Carga los datos
     """
-    #TODO: Realizar la carga de datos
-    pass
+    data = logic.load_data(control, os.path.join('Data', "movies-small.csv"))
+    print(data)
 
 
 def print_data(control, id):
     """
         Función que imprime un dato dado su ID
     """
-    #TODO: Realizar la función para imprimir un elemento
-    pass
+    respuesta = logic.load_data(control)
+    print(respuesta)
 
 def print_req_1(control):
     """
