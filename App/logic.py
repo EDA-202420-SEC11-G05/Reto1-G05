@@ -55,59 +55,6 @@ def load_data(catalog, filename):
     """
     Carga los datos del reto
     """
-    with open(filename, mode ="r", encoding="utf-8") as archivo:
-        lector = csv.DictReader(archivo)
-        for pelicula in lector:
-            print(pelicula)
-            catalog["title"] = pelicula["title"]           
-            if pelicula["original_language"] == " ": 
-                catalog["title"]["original_language"] = "Desconocido"
-            else:
-                catalog["title"]["original_language"] = str(pelicula['original_language'])    
-            if pelicula["popularity"] == None:
-                catalog["title"]["popularity"] = "Desconocido"
-            else:
-                catalog["title"]["original_lenguage"] = pelicula['original_lenguage']   
-                
-            if pelicula["release_date"] == None:
-                catalog["title"]["release_date"] = "Desconocido"           
-            else:
-                catalog["title"]["release_date"] = pelicula["release_date"]
-                
-            if pelicula["revenue"] == None:
-                catalog["title"]["revenue"] = "Desconocido"           
-            else:
-                catalog["title"]["revenue"] = pelicula["revenue"]        
-                
-            if pelicula["runtime"] == None:
-                catalog["title"]["runtime"] = "Desconocido"           
-            else:
-                catalog["title"]["runtime"] = pelicula["runtime"]     
-                
-            if pelicula["status"] == None:
-                catalog["title"]["status"] = "Desconocido"           
-            else:
-                catalog["title"]["status"] = pelicula["status"]     
-        
-            if pelicula["vote_average"] == None:
-                catalog["title"]["vote_average"] = "Desconocido"           
-            else:
-                catalog["title"]["vote_average"] = pelicula["vote_average"]    
-                
-            if  pelicula["vote_count"] == None:
-                catalog["title"]["vote_count"] = "Desconocido"           
-            else:
-                catalog["title"]["vote_count"] = pelicula["vote_count"]   
-                
-            if pelicula["id"] == None:
-                catalog["title"]["id"] = "Desconocido"           
-            else:
-                catalog["title"]["id"] = pelicula["id"]   
-                        
-    return catalog
-
-print(load_data(new_logic(), "Data/movies-small.csv"))
-            
         
     
     
