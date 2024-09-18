@@ -1,13 +1,10 @@
+from DataStructures import Array_list as lt
 import time
 import json
 import csv
 
 csv.field_size_limit(2147483647)
 
-def new_list():
-    newlist = {'elements': [],
-               'size': 0}
-    return newlist
 
 def create_json():
     newgenre = {'id': None,
@@ -34,19 +31,7 @@ def new_logic():
     """
     Crea el catalogo para almacenar las estructuras de datos
     """
-    catalog = {'id': None,
-               'title': None,
-               'original_language': None,
-               'release_date': None,
-               'revenue': None,
-               'runtime': None,
-               'status': None,
-               'vote_average': None,
-               'vote_count': None,
-               'budget': None,
-               'genres': None,
-               'production_companies': None
-               }
+    catalog = lt.new_list()
     return catalog
 
 # Funciones para la carga de datos
@@ -55,6 +40,13 @@ def load_data(catalog, filename):
     """
     Carga los datos del reto
     """
+    with open(filename, mode = "r", encoding="utf-8") as archivo:
+        lector = csv.DictReader
+        for fila in lector:
+            print(fila)
+    return None
+
+print(load_data(new_logic(),"Data/movies-small.csv"))
         
     
     
