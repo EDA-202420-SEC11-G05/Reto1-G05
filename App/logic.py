@@ -1,4 +1,5 @@
-
+import os
+import sys
 import time
 import json
 import csv
@@ -6,6 +7,9 @@ import csv
 csv.field_size_limit(2147483647)
 
 from DataStructures.Lists import Array_list as lt
+
+data_dir = os.path.dirname(os.path.realpath('__file__')) + '/Data/'
+sys.path.append(os.path.abspath("DataStructures/Lists"))
 
 def create_json():
     newgenre = {'id': None,
