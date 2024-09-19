@@ -42,9 +42,12 @@ def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 1
-    pass
-
+    
+    tm = int(input("Ingresa el tiempo minimo de las peliculas que desees buscar: "))
+    pelicula,num = logic.req_1(control,tm)
+    print("El total de peliculas que superan el tiempo indicado es: ",num)
+    print("Y la pelicula más reciente es: ")
+    print(pelicula)
 
 def print_req_2(control):
     """

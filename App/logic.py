@@ -1,6 +1,7 @@
 import time
 import json
 import csv
+from datetime import datetime
 from DataStructures.Lists import Array_list as lt
 
 csv.field_size_limit(2147483647)
@@ -71,6 +72,42 @@ def req_1(catalog, tm):
     """
     Retorna el resultado del requerimiento 1
     """
+    peliculas_filtradas=lt.new_list()
+    
+    peliculas = catalog["elements"]
+    for pelicula in peliculas:
+        if float(pelicula["runtime"]) > tm:
+            lt.add_last(peliculas_filtradas, pelicula)
+            
+    peliculas_filtradas["elements"].sort(key=lambda p: datetime.strptime(p["release_date"],'%Y-%m-%d'), reverse=True)
+    
+    if float(peliculas_filtradas['elements'][0]["revenue"]) == 0 or float(peliculas_filtradas['elements'][0]["budget"]) == 0:
+        ganancias = 0
+    else:
+        ganancias = float(peliculas_filtradas['elements'][0]["revenue"]) - float(peliculas_filtradas['elements'][0]["budget"])
+     
+     
+    pelicula_mas_reciente = {"Tiempo de duracion": peliculas_filtradas['elements'][0]["runtime"],
+                             "Fecha de publiación de la pelicula" : peliculas_filtradas['elements'][0]["release_date"],
+                             "Titulo original de la pelicula" : peliculas_filtradas['elements'][0]["title"],
+                             "Presupuesto destinado a la realizacion de la pelicula" : peliculas_filtradas['elements'][0]["budget"],
+                             "Dinero recaudado neto por la pelicula" : peliculas_filtradas['elements'][0]["revenue"],
+                             "Ganancia final de una pelicula" : ganancias,
+                             "Puntaje de calificación de la pelicula" : peliculas_filtradas['elements'][0]["vote_average"],
+                             "Idioma original de publicación" : peliculas_filtradas['elements'][0]["original_language"]
+                             }
+
+    
+    return pelicula_mas_reciente, peliculas_filtradas["size"]
+
+    
+    
+            
+            
+            
+                
+                    
+                
     
 
 
