@@ -119,12 +119,57 @@ def req_2(catalog):
     pass
 
 
-def req_3(catalog):
+def req_3(catalog, idioma, fi, ff):
     """
     Retorna el resultado del requerimiento 3
     """
-    # TODO: Modificar el requerimiento 3
-    pass
+    suma = 0
+    fi_dt = datetime.strptime(fi,"%Y-%m-%d")
+    ff_dt = datetime.strptime(ff,"%Y-%m-%d")
+    
+    peliculas_filtradas = lt.new_list()
+    peliculas_filtradas_con_formato = lt.new_list()
+    
+    for pelicula in catalog["elements"]:
+        
+        if pelicula["original_language"] == idioma:
+            if fi_dt<= datetime.strptime(pelicula["release_date"],"%Y-%m-%d") and datetime.strptime(pelicula["release_date"],"%Y-%m-%d") <= ff_dt:
+               lt.add_last(peliculas_filtradas, pelicula) 
+    
+    for a in peliculas_filtradas["elements"]:
+        
+        if float(a["budget"]) == 0 or float(a["revenue"]):
+            ganancias = 0
+        else:
+            ganancias = float(a["revenue"]-a["budget"])
+        
+        movie = {"Fecha de publicación de la película" : datetime.strptime(a["release_date"],"%Y-%m-%d"),
+                 "Título original de la película" : a["title"],
+                 "Presupuesto destinado a la realización de la película" : a["budget"],
+                 "Dinero recaudado por la película" : a["revenue"],
+                 "Ganancia de final de la película" : ganancias,
+                 "Tiempo de duración en minutos de la pelicula" : a["runtime"],
+                 "Puntaje de clasificación de la película" : a["vote_average"],
+                 "Estado de la película" : a["status"]
+                 }
+        lt.add_last(peliculas_filtradas_con_formato, movie)
+        suma += float(a["runtime"])
+        
+    promedio = suma / peliculas_filtradas_con_formato["size"]
+        
+    if peliculas_filtradas_con_formato["size"] > 20:
+        p_iniciales = lt.sub_list(peliculas_filtradas_con_formato,1,5 )
+        p_finales = lt.sub_list(peliculas_filtradas_con_formato,peliculas_filtradas_con_formato["size"]-5,peliculas_filtradas_con_formato["size"])
+        return 
+        
+    promedio = suma / peliculas_filtradas_con_formato["size"]
+    
+    return promedio, 
+        
+
+        
+        
+
 
 
 def req_4(catalog):
