@@ -100,16 +100,6 @@ def req_1(catalog, tm):
     
     return pelicula_mas_reciente, peliculas_filtradas["size"]
 
-    
-    
-            
-            
-            
-                
-                    
-                
-    
-
 
 def req_2(catalog):
     """
@@ -170,17 +160,52 @@ def req_3(catalog, idioma, fi, ff):
     return promedio, p_iniciales, p_finales, peliculas_filtradas_con_formato["size"]
         
 
-        
-        
-
-
-
-def req_4(catalog):
+def req_4(catalog, estado, fi, ff):
     """
     Retorna el resultado del requerimiento 4
     """
-    # TODO: Modificar el requerimiento 4
-    pass
+    pelis = []
+    total_duracion = 0
+    total_pelis = 0
+    fecha_i = datetime.strptime(fi, "%Y-%m-%d")
+    fecha_f = datetime.strptime(ff, "%Y-%m-%d")
+    for movie in catalog['elements']:
+        status = movie['status']
+        release_date = movie['release_date']
+        if status == estado:
+            fecha_publicacion = datetime.strptime(release_date, "%Y-%m-%d")
+            if fecha_i <= fecha_publicacion <= fecha_f:
+                pelis.append(movie)
+                duracion_movie = movie.get('runtime', 'Desconocido')
+                if duracion_movie != 'Desconocido':
+                    total_duracion += float(duracion_movie)
+                total_pelis += 1
+    
+    if total_pelis > 0:
+        tiempo_promedio = total_duracion / total_pelis
+    else:
+        tiempo_promedio = 0
+    
+    if len(pelis) > 20:
+        pelis_resultado = pelis[:5] + pelis[-5:]
+    else:
+        pelis_resultado = pelis
+        
+    resultado = {
+        'total_peliculas': total_pelis,
+        'tiempo_promedio': tiempo_promedio,
+        'peliculas': [{
+            'fecha_publicacion': movie['release_date'],
+            'titulo': movie['title'],
+            'presupuesto': movie['budget'] if movie['budget'] != 'Desconocido' else 'Indefinido',
+            'recaudado': movie['revenue'] if movie['revenue'] != 'Desconocido' else 'Indefinido',
+            'ganancia': movie['profit'],
+            'duracion': movie['runtime'],
+            'calificacion': movie['vote_average'],
+            'idioma': movie['original_language']
+        } for movie in pelis_resultado]
+    }
+    return resultado
 
 
 def req_5(catalog):
@@ -241,23 +266,12 @@ def req_6(catalog, idioma, ai, af):
     
     return definitivo
             
-                                                        
-                                                      
-            
 
-        
-    
-                
-    
-    
-
-
-def req_7(catalog):
+def req_7(catalog, companie, fi, ff):
     """
     Retorna el resultado del requerimiento 7
     """
-    # TODO: Modificar el requerimiento 7
-    pass
+    
 
 
 def req_8(catalog):

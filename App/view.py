@@ -28,7 +28,7 @@ def load_data(control):
     Carga los datos
     """
     data = logic.load_data(control, os.path.join('Data', "movies-small.csv"))
-    print(data)
+    return data
 
 
 def print_data(control, id):
@@ -80,8 +80,11 @@ def print_req_4(control):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 4
-    pass
+    estado = input("Ingresa el estado de producción de la película: ")
+    fi = input("Ingresa la fecha inicial que desees acotar: ")
+    ff = input("Ingresa la fecha final que desees acotar: ")
+    respuesta = logic.req_4(control, estado, fi, ff)
+    print(respuesta)
 
 
 def print_req_5(control):
