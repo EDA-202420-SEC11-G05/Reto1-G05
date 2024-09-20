@@ -197,8 +197,8 @@ def req_4(catalog, estado, fi, ff):
         'peliculas': [{
             'fecha_publicacion': movie['release_date'],
             'titulo': movie['title'],
-            'presupuesto': movie['budget'] if movie['budget'] != 'Desconocido' else 'Indefinido',
-            'recaudado': movie['revenue'] if movie['revenue'] != 'Desconocido' else 'Indefinido',
+            'presupuesto': movie['budget'],
+            'recaudado': movie['revenue'],
             'ganancia': movie['profit'],
             'duracion': movie['runtime'],
             'calificacion': movie['vote_average'],
@@ -267,18 +267,77 @@ def req_6(catalog, idioma, ai, af):
     return definitivo
             
 
-def req_7(catalog, companie, fi, ff):
+def req_7(catalog, prod_companie, ai, af):
     """
     Retorna el resultado del requerimiento 7
     """
+    peliculas = {}
+    for movie in catalog['elements']:
+        estado = movie['status']
+        fecha_publicacion = movie['release_date']
+        companias = movie['production_companies']
+        if estado == 'Released':
+            anio_publicacion = str(datetime.strptime(fecha_publicacion, "%Y-%m-%d").year)
+            if ai <= anio_publicacion <= af:
+                for compania in companias:
+                    if compania['name'] == prod_companie:
+                        if anio_publicacion not in peliculas:
+                            peliculas[anio_publicacion] = {
+                                'total_peliculas': 0,
+                                'votaciones': 0,
+                                'duracion': 0,
+                                'ganancias': 0,
+                                'peliculas': []
+                            }
+                        peliculas[anio_publicacion]['total_peliculas'] += 1
+                        
+                        votacion = float(movie['vote_average'])
+                        duracion = float(movie['runtime'])
+                        presupuesto = float(movie['budget'])
+                        revenue = float(movie['revenue'])
+                        ganancia = revenue - presupuesto
+                        
+                        peliculas[anio_publicacion]['votaciones'] += votacion
+                        peliculas[anio_publicacion]['duracion'] += duracion
+                        peliculas[anio_publicacion]['ganancias'] += ganancia
+                        
+                        peliculas[anio_publicacion]['peliculas'].append({
+                            'titulo': movie['title'],
+                            'votacion': votacion,
+                            'duracion': duracion,
+                            'ganancias': ganancia
+                        })
+                        
+    resultado = {}
+    for anio, data in peliculas.items():
+        total_pelis = data['total_peliculas']
+        promedio_votacion = data['votaciones'] / total_pelis if total_pelis > 0 else 0
+        promedio_duracion = data['duracion'] / total_pelis if total_pelis > 0 else 0
+        total_ganancias = data['ganancias']
+        
+        mejor_peli = data['peliculas'][0]
+        peor_peli = data['peliculas'][0]
+        for pelicula in data['peliculas']:
+            if pelicula['votacion'] > mejor_peli['votacion']:
+                mejor_peli = pelicula
+            if pelicula['votacion'] < peor_peli['votacion']:
+                peor_peli = pelicula
     
+        resultado[anio] = {
+            'total_peliculas': total_pelis,
+            'votacion_promedio': promedio_votacion,
+            'duracion_promedio': promedio_duracion,
+            'ganancias_totales': total_ganancias,
+            'mejor_pelicula': mejor_peli,
+            'peor_pelicula': peor_peli
+        }
+    return resultado
 
 
-def req_8(catalog):
+def req_8(catalog, anio, genre):
     """
     Retorna el resultado del requerimiento 8
     """
-    # TODO: Modificar el requerimiento 8
     pass
 
 

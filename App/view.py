@@ -111,8 +111,11 @@ def print_req_7(control):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 7
-    pass
+    prod_companie = input("Ingrese la compañia productora: ")
+    ai = input("Ingrese el año inicial: ")
+    af = input("Ingrese el año final: ")
+    respuesta = logic.req_7(control, prod_companie, ai, af)
+    print(respuesta)
 
 
 def print_req_8(control):
