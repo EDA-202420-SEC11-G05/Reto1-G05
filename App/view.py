@@ -61,8 +61,19 @@ def print_req_3(control):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 3
-    pass
+    idioma = input ("Ingresa el idioma de la pelicula que desees buscar: ")
+    fi = input("Ingresa la fecha inicial que desees acotar: ")
+    ff = input("Ingresa la fecha final que desees acotar: ")
+    promedio, p_iniciales, p_finales, tamaño = logic.req_3(control, idioma, fi, ff)
+    if tamaño > 20:
+        print("Las primeras y ultimas 5 peliculas son: ")
+        print(p_iniciales)
+        print(p_finales)
+        print("Fueron un total de ",tamaño,"peliculas que tuvieron un promedio de ", promedio, " minutos")
+    else:
+        print("Las peliculas son: ")
+        print(p_iniciales)
+        print("Fueron un total de ", tamaño, " que tuvieron un prmedio de duracion de" ,promedio," minutos")
 
 
 def print_req_4(control):
@@ -85,8 +96,12 @@ def print_req_6(control):
     """
         Función que imprime la solución del Requerimiento 6 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 6
-    pass
+    idioma = input("Ingresa el idioma de la película que desees buscar: ")
+    ai = int(input("Ingresa el año que desees acotar: "))
+    af = int(input("Ingresa el año que desees para acotar : "))
+    respuesta = logic.req_6(control, idioma, ai, af)
+    print("El diccionario de los años que estas buscando es: ")
+    print(respuesta)
 
 
 def print_req_7(control):

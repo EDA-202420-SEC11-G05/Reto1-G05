@@ -138,12 +138,12 @@ def req_3(catalog, idioma, fi, ff):
     
     for a in peliculas_filtradas["elements"]:
         
-        if float(a["budget"]) == 0 or float(a["revenue"]):
+        if float(a["budget"]) == 0 or float(a["revenue"]) == 0:
             ganancias = 0
         else:
-            ganancias = float(a["revenue"]-a["budget"])
+            ganancias = float(a["revenue"])-float(a["budget"])
         
-        movie = {"Fecha de publicación de la película" : datetime.strptime(a["release_date"],"%Y-%m-%d"),
+        movie = {"Fecha de publicación de la película" : a["release_date"],
                  "Título original de la película" : a["title"],
                  "Presupuesto destinado a la realización de la película" : a["budget"],
                  "Dinero recaudado por la película" : a["revenue"],
@@ -160,11 +160,14 @@ def req_3(catalog, idioma, fi, ff):
     if peliculas_filtradas_con_formato["size"] > 20:
         p_iniciales = lt.sub_list(peliculas_filtradas_con_formato,1,5 )
         p_finales = lt.sub_list(peliculas_filtradas_con_formato,peliculas_filtradas_con_formato["size"]-5,peliculas_filtradas_con_formato["size"])
-        return 
+    else:
+        p_iniciales = peliculas_filtradas_con_formato
+        p_finales = peliculas_filtradas_con_formato
+                
         
     promedio = suma / peliculas_filtradas_con_formato["size"]
     
-    return promedio, 
+    return promedio, p_iniciales, p_finales, peliculas_filtradas_con_formato["size"]
         
 
         
@@ -187,12 +190,66 @@ def req_5(catalog):
     # TODO: Modificar el requerimiento 5
     pass
 
-def req_6(catalog):
+def req_6(catalog, idioma, ai, af):
     """
     Retorna el resultado del requerimiento 6
     """
-    # TODO: Modificar el requerimiento 6
-    pass
+    
+    peliculas_filtradas = lt.new_list()
+    diccionario = {}
+    suma_votos = 0
+    suma_tiempo = 0
+    
+    for pelicula in catalog["elements"]:
+        if pelicula["original_language"] == idioma:
+            if int(ai) < datetime.strptime(pelicula['release_date'], '%Y-%m-%d').year and datetime.strptime(pelicula['release_date'], '%Y-%m-%d').year < int(af):
+                lt.add_last(peliculas_filtradas,pelicula)
+                
+    diccionario = {datetime.strptime(peliculas_filtradas["elements"][0]['release_date'], '%Y-%m-%d').year : [peliculas_filtradas["elements"][0]]}
+    
+    for pelicula in peliculas_filtradas["elements"]:
+        if datetime.strptime(pelicula['release_date'], '%Y-%m-%d').year in diccionario:
+            diccionario[datetime.strptime(pelicula['release_date'], '%Y-%m-%d').year].append(pelicula)
+        else:
+            diccionario[datetime.strptime(pelicula['release_date'], '%Y-%m-%d').year] = [pelicula]
+            
+
+    
+    for ano in diccionario:
+        for i in range(0,len(diccionario[ano])):
+            mejor = float(diccionario[ano][0]["vote_average"])
+            mejor_nombre = diccionario[ano][0]["title"]
+            peor = float(diccionario[ano][0]["vote_average"])
+            peor_nombre = diccionario[ano][0]["title"]
+            if float(diccionario[ano][i]["vote_average"]) > mejor:
+                mejor = float(diccionario[ano][i]["vote_average"])
+                mejor_nombre = diccionario[ano][i]["title"]
+            if float(diccionario[ano][i]["vote_average"]) < peor:
+                peor = float(diccionario[ano][i]["vote_average"])
+                peor_nombre = diccionario[ano][i]["title"]
+            suma_votos = suma_votos+float(diccionario[ano][i]["vote_average"])
+            promedio_votos = suma_votos/len(diccionario[ano])
+            suma_tiempo = suma_tiempo+float(diccionario[ano][i]["runtime"])
+            promedio_tiempo = suma_tiempo/len(diccionario[ano])
+            definitivo = {ano: {"El año del listado": ano,
+                                "Total de películas": len(diccionario[ano]),
+                                "Promedio de la votación promedio": promedio_votos,
+                                "Tiempo promedio": promedio_tiempo,
+                                "Ganancias acumuladas" : 0,
+                                "Mejor pelicula": (mejor,mejor_nombre),
+                                "Poer pelicula" : (peor,peor_nombre)}}
+    
+    return definitivo
+            
+                                                        
+                                                      
+            
+
+        
+    
+                
+    
+    
 
 
 def req_7(catalog):
