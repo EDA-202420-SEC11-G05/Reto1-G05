@@ -77,19 +77,25 @@ def req_1(catalog, tm):
     Retorna el resultado del requerimiento 1
     """
     peliculas_filtradas=lt.new_list()
+    #Creamos un Array_list, él cual se usara para agregar las peliculas "filtradas"
     
     peliculas = catalog["elements"]
     for pelicula in peliculas:
         if float(pelicula["runtime"]) > tm:
             lt.add_last(peliculas_filtradas, pelicula)
             
+    #Filtramos las peliculas que superen el tiempo de duracion ingresado por el usuario
+            
     peliculas_filtradas["elements"].sort(key=lambda p: datetime.strptime(p["release_date"],'%Y-%m-%d'), reverse=True)
+    
+    #Las organizamos de fecha más reciente a más antigua
     
     if float(peliculas_filtradas['elements'][0]["revenue"]) == 0 or float(peliculas_filtradas['elements'][0]["budget"]) == 0:
         ganancias = 0
     else:
         ganancias = float(peliculas_filtradas['elements'][0]["revenue"]) - float(peliculas_filtradas['elements'][0]["budget"])
      
+    # Revisamos laas ganancias para comprobar si debe ser 0 o no
      
     pelicula_mas_reciente = {"Tiempo de duracion": peliculas_filtradas['elements'][0]["runtime"],
                              "Fecha de publiación de la pelicula" : peliculas_filtradas['elements'][0]["release_date"],
@@ -101,6 +107,7 @@ def req_1(catalog, tm):
                              "Idioma original de publicación" : peliculas_filtradas['elements'][0]["original_language"]
                              }
 
+    # Creamos un diccionario con las llaves pedidas y los datos de la pelicula más reciente
     
     return pelicula_mas_reciente, peliculas_filtradas["size"]
 
@@ -121,11 +128,16 @@ def req_3(catalog, idioma, fi, ff):
     fi_dt = datetime.strptime(fi,"%Y-%m-%d")
     ff_dt = datetime.strptime(ff,"%Y-%m-%d")
     
+    # Inicializamos una suma en 0 la cuál será utilizada después, además de volver crear la variable de fechas en DataTime
+    
+    
     peliculas_filtradas = lt.new_list()
     peliculas_filtradas_con_formato = lt.new_list()
     
-    for pelicula in catalog["elements"]:
-        
+    # Creamos dos Array List, uno en él cual las filtraremos por su idioma y fecha (Peliculas_filtradas) y el otro para las que vamos a retornar
+    
+    
+    for pelicula in catalog["elements"]:  
         if pelicula["original_language"] == idioma:
             if fi_dt<= datetime.strptime(pelicula["release_date"],"%Y-%m-%d") and datetime.strptime(pelicula["release_date"],"%Y-%m-%d") <= ff_dt:
                lt.add_last(peliculas_filtradas, pelicula) 
@@ -149,7 +161,13 @@ def req_3(catalog, idioma, fi, ff):
         lt.add_last(peliculas_filtradas_con_formato, movie)
         suma += float(a["runtime"])
         
+    # Realizamos este for ... range para crear un diccionario con las llaves de las peliculas que cumplan la condicion, para posteriormente ser añadidas al diccionario creamos desde el inicio.
+    
+        
     promedio = suma / peliculas_filtradas_con_formato["size"]
+    
+    # Realizamos el promedio del tiempo, suma estaba dentro del for e iba sumando los tiempos de las peliculas que cumplian las condiciones
+    
         
     if peliculas_filtradas_con_formato["size"] > 20:
         p_iniciales = lt.sub_list(peliculas_filtradas_con_formato,1,5 )
@@ -157,9 +175,10 @@ def req_3(catalog, idioma, fi, ff):
     else:
         p_iniciales = peliculas_filtradas_con_formato
         p_finales = peliculas_filtradas_con_formato
-                
         
-    promedio = suma / peliculas_filtradas_con_formato["size"]
+    # Una condición de este requisito era que si eran más de 20 peliculas, retornaramos las 5 primeras y las 5 últimas.
+    # En caso de que sea mayor, creamos una sublistas con las 5 primeras y 5 últimas, si no, será, las mismas que teniamos antes.
+    
     
     return promedio, p_iniciales, p_finales, peliculas_filtradas_con_formato["size"]
         
@@ -238,29 +257,40 @@ def req_6(catalog, idioma, ai, af):
     Retorna el resultado del requerimiento 6
     """
     
-    peliculas_filtradas = lt.new_list()
-    diccionario = {}
-    suma_votos = 0
-    suma_tiempo = 0
+    peliculas_filtradas = lt.new_list() #Creamos un Array list en él cual agregaremos las peliculas filtradas
+    diccionario = {} # Creamos un diccionario que usaremos posteriormente
+    suma_votos = 0 # Inicializamos una suma en 0 para promediar el voto de las peliculas
+    suma_tiempo = 0 #Inicializamos una suma en 0 para promediar el tiempo de duración de las peliculas
     
     for pelicula in catalog["elements"]:
         if pelicula["original_language"] == idioma:
             if int(ai) < datetime.strptime(pelicula['release_date'], '%Y-%m-%d').year and datetime.strptime(pelicula['release_date'], '%Y-%m-%d').year < int(af):
                 lt.add_last(peliculas_filtradas,pelicula)
                 
+    # Con este for ...["elements"]: filtramos las peliculas por idioma y año, y posteriormente las agregamos al array list que habiamos creado inicialmente
+
+                
     diccionario = {datetime.strptime(peliculas_filtradas["elements"][0]['release_date'], '%Y-%m-%d').year : [peliculas_filtradas["elements"][0]]}
     
+    # Creamos una llave del diccionario con el primer año para realizar el siguiente patrón: En caso de que el año este, agregamos la pelicula al valor (lista) de año, en caso de que no lo creamos
+
+
+
     for pelicula in peliculas_filtradas["elements"]:
         if datetime.strptime(pelicula['release_date'], '%Y-%m-%d').year in diccionario:
             diccionario[datetime.strptime(pelicula['release_date'], '%Y-%m-%d').year].append(pelicula)
         else:
             diccionario[datetime.strptime(pelicula['release_date'], '%Y-%m-%d').year] = [pelicula]
+        if float(pelicula["budget"]) == 0 or float(pelicula["revenue"]) == 0:
+            ganancias = 0
+        else:
+            ganancias = float(pelicula["revenue"])-float(pelicula["budget"])
             
-
+    # Nos piden un diccionario con unas condiciones especificas de cada año, por eso creamos "definitivo"
     
-    for ano in diccionario:
-        for i in range(0,len(diccionario[ano])):
-            mejor = float(diccionario[ano][0]["vote_average"])
+    for ano in diccionario: #Tomamos los años que fueron previamente filtrados
+        for i in range(0,len(diccionario[ano])): # Realizamos un recorrido por indice para revisar todas las peliculas, ya que estamos en una lista
+            mejor = float(diccionario[ano][0]["vote_average"]) #Hacemos el patron del mejor y del peor para hallar respectivamente las mejores y peores peliculas
             mejor_nombre = diccionario[ano][0]["title"]
             peor = float(diccionario[ano][0]["vote_average"])
             peor_nombre = diccionario[ano][0]["title"]
@@ -270,18 +300,19 @@ def req_6(catalog, idioma, ai, af):
             if float(diccionario[ano][i]["vote_average"]) < peor:
                 peor = float(diccionario[ano][i]["vote_average"])
                 peor_nombre = diccionario[ano][i]["title"]
-            suma_votos = suma_votos+float(diccionario[ano][i]["vote_average"])
+            suma_votos = suma_votos+float(diccionario[ano][i]["vote_average"]) # Usamos las sumas que habiamos inicializando desde el principio para hallar los promedios
             promedio_votos = suma_votos/len(diccionario[ano])
-            suma_tiempo = suma_tiempo+float(diccionario[ano][i]["runtime"])
+            suma_tiempo = suma_tiempo+float(diccionario[ano][i]["runtime"]) # Esto lo realizamos para los votos y la duración de la pelicula.
             promedio_tiempo = suma_tiempo/len(diccionario[ano])
             definitivo = {ano: {"El año del listado": ano,
                                 "Total de películas": len(diccionario[ano]),
                                 "Promedio de la votación promedio": promedio_votos,
                                 "Tiempo promedio": promedio_tiempo,
-                                "Ganancias acumuladas" : 0,
+                                "Ganancias acumuladas" : ganancias,
                                 "Mejor pelicula": (mejor,mejor_nombre),
                                 "Poer pelicula" : (peor,peor_nombre)}}
-    
+     # Por ultimo, creamos un diccionario donde la llave sera el año, listamos su total, sus promedios, sus ganacias y los mejores y peores
+     
     return definitivo
             
 
