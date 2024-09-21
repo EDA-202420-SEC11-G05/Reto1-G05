@@ -24,9 +24,12 @@ def load_data(catalog, filename):
     """
     Carga los datos del reto
     """
+    # se abre el archivo csv
     with open(filename, encoding='utf-8') as file:
         movies_file = csv.DictReader(file)
+        # se recorre el archivo 
         for movie in movies_file:
+            # se extraen todos los datos de cada pelicula
             id = movie.get('id', 'Desconocido')
             title = movie.get('title', 'Desconocido')
             org_language = movie.get('original_language', 'Desconocido')
@@ -40,7 +43,7 @@ def load_data(catalog, filename):
             profit = float(revenue) - float(budget)
             genre = json.loads(movie.get('genres', 'Desconocido'))
             companies = json.loads(movie.get('production_companies', 'Desconocido'))
-            
+            # se crea un diccionario para cada pelicula
             movie_info = {
                 'id': id,
                 'title': title,
@@ -56,6 +59,7 @@ def load_data(catalog, filename):
                 'production_companies': companies,
                 'genre': genre
             }
+            # se agrega la pelicla al catalogo
             lt.add_last(catalog, movie_info)
     return catalog
 
@@ -164,36 +168,50 @@ def req_4(catalog, estado, fi, ff):
     """
     Retorna el resultado del requerimiento 4
     """
+    # se crea un una lista que guardara las peliculas que cumplen los criterios
     pelis = []
+    # se crea una variable para sumar la duracion de todas las peliculas que cumplan los criterios
     total_duracion = 0
+    # se crea una variable que suma las peliculas que cumplen los criterios
     total_pelis = 0
+    # se convierten "fi" y "ff" a obajetos tipo datetime para poder hacer comparaciones de fechas
     fecha_i = datetime.strptime(fi, "%Y-%m-%d")
     fecha_f = datetime.strptime(ff, "%Y-%m-%d")
+    # se recorre todo el catalogo
     for movie in catalog['elements']:
+        # se saca el status y la fecha de publicacion de cada pelicula
         status = movie['status']
         release_date = movie['release_date']
+        # se compara si el estado de la pelicula es igual al requerido
         if status == estado:
+            # se saca la fecha de publicacion de cada pelicula en tipo datetime
             fecha_publicacion = datetime.strptime(release_date, "%Y-%m-%d")
+            # se compara si la fecha de publicacion de la pelicula esta en el rango de fechas dadas
             if fecha_i <= fecha_publicacion <= fecha_f:
+                # se agrega la pelicula a la lista "pelis"
                 pelis.append(movie)
+                # se suma la duracion de las peliculas y se suma el conteo total de peliculas que cumplen con los criterios dados
                 duracion_movie = movie.get('runtime', 'Desconocido')
                 if duracion_movie != 'Desconocido':
                     total_duracion += float(duracion_movie)
                 total_pelis += 1
-    
+    # se calcula la duracion promedio de todas las peliculas
     if total_pelis > 0:
         tiempo_promedio = total_duracion / total_pelis
+    # si no se encuentra ninguna pelicula es promedio es 0
     else:
         tiempo_promedio = 0
-    
+    # si la lista de peliculas tiene mas de 20 peliculas se guardan solo las primeras 5 y las ultimas 5
     if len(pelis) > 20:
         pelis_resultado = pelis[:5] + pelis[-5:]
+    # si hay menos de 20 se guardan todas las peliculas
     else:
         pelis_resultado = pelis
-        
+    # se crea el diccionario que se va a retornar
     resultado = {
         'total_peliculas': total_pelis,
         'tiempo_promedio': tiempo_promedio,
+        # la lista de diccionarios con los detalles de todas las peliculas que cumplen los criterios
         'peliculas': [{
             'fecha_publicacion': movie['release_date'],
             'titulo': movie['title'],
@@ -271,16 +289,24 @@ def req_7(catalog, prod_companie, ai, af):
     """
     Retorna el resultado del requerimiento 7
     """
+    # se crea un diccionario para almacenar las peliculas por cada
     peliculas = {}
+    # se recorren todas las peliculas en catalog
     for movie in catalog['elements']:
+        # se saca el estado, la fecha de publicacion y la compañia de cada pelicula
         estado = movie['status']
         fecha_publicacion = movie['release_date']
         companias = movie['production_companies']
+        # si el estado de la pelicula es Released continua
         if estado == 'Released':
+            # se saca el año en que se publico la pelicula
             anio_publicacion = str(datetime.strptime(fecha_publicacion, "%Y-%m-%d").year)
+            # se compara el año de publicacion para compararlo con el rango de años dados 
             if ai <= anio_publicacion <= af:
+                # se recorren la compañia de la pelicula y luego se compara con la compañia
                 for compania in companias:
                     if compania['name'] == prod_companie:
+                        # si el año de la pelicula no existe en "peliculas" se crea 
                         if anio_publicacion not in peliculas:
                             peliculas[anio_publicacion] = {
                                 'total_peliculas': 0,
@@ -289,18 +315,19 @@ def req_7(catalog, prod_companie, ai, af):
                                 'ganancias': 0,
                                 'peliculas': []
                             }
+                        # se añade la pelicula a "peliculas" segun el año de publicacion
                         peliculas[anio_publicacion]['total_peliculas'] += 1
-                        
+                        # se extraen los datos importantes de la pelicula
                         votacion = float(movie['vote_average'])
                         duracion = float(movie['runtime'])
                         presupuesto = float(movie['budget'])
                         revenue = float(movie['revenue'])
                         ganancia = revenue - presupuesto
-                        
+                        # se agregan esos datos a los totales por año
                         peliculas[anio_publicacion]['votaciones'] += votacion
                         peliculas[anio_publicacion]['duracion'] += duracion
                         peliculas[anio_publicacion]['ganancias'] += ganancia
-                        
+                        # se guardan los datos de cada pelicula en la lista de cada año
                         peliculas[anio_publicacion]['peliculas'].append({
                             'titulo': movie['title'],
                             'votacion': votacion,
@@ -309,12 +336,14 @@ def req_7(catalog, prod_companie, ai, af):
                         })
                         
     resultado = {}
+    # se recorre el diccionario "peliculas"
     for anio, data in peliculas.items():
+        # se calculan los datos agregados para cada año
         total_pelis = data['total_peliculas']
         promedio_votacion = data['votaciones'] / total_pelis if total_pelis > 0 else 0
         promedio_duracion = data['duracion'] / total_pelis if total_pelis > 0 else 0
         total_ganancias = data['ganancias']
-        
+        # se busca la mejor y peor pelicula basandose en la votacion
         mejor_peli = data['peliculas'][0]
         peor_peli = data['peliculas'][0]
         for pelicula in data['peliculas']:
@@ -322,7 +351,7 @@ def req_7(catalog, prod_companie, ai, af):
                 mejor_peli = pelicula
             if pelicula['votacion'] < peor_peli['votacion']:
                 peor_peli = pelicula
-    
+        # se guardan los resultados en un nuevo diccionario
         resultado[anio] = {
             'total_peliculas': total_pelis,
             'votacion_promedio': promedio_votacion,

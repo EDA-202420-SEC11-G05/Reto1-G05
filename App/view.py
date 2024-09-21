@@ -27,7 +27,10 @@ def load_data(control):
     """
     Carga los datos
     """
-    data = logic.load_data(control, os.path.join('Data', "movies-small.csv"))
+    start = logic.get_time()
+    data = logic.load_data(control, os.path.join('Data', "movies-large.csv"))
+    end = logic.get_time()
+    print(logic.delta_time(start, end))
     return data
 
 
@@ -42,12 +45,14 @@ def print_req_1(control):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
-    
+    start = logic.get_time()
     tm = int(input("Ingresa el tiempo minimo de las peliculas que desees buscar: "))
     pelicula,num = logic.req_1(control,tm)
     print("El total de peliculas que superan el tiempo indicado es: ",num)
     print("Y la pelicula más reciente es: ")
     print(pelicula)
+    end = logic.get_time()
+    print(logic.delta_time(start, end))
 
 def print_req_2(control):
     """
@@ -61,6 +66,7 @@ def print_req_3(control):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
+    start = logic.get_time()
     idioma = input ("Ingresa el idioma de la pelicula que desees buscar: ")
     fi = input("Ingresa la fecha inicial que desees acotar: ")
     ff = input("Ingresa la fecha final que desees acotar: ")
@@ -74,18 +80,22 @@ def print_req_3(control):
         print("Las peliculas son: ")
         print(p_iniciales)
         print("Fueron un total de ", tamaño, " que tuvieron un prmedio de duracion de" ,promedio," minutos")
+    end = logic.get_time()
+    print(logic.delta_time(start, end))
 
 
 def print_req_4(control):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
+    start = logic.get_time()
     estado = input("Ingresa el estado de producción de la película: ")
     fi = input("Ingresa la fecha inicial que desees acotar: ")
     ff = input("Ingresa la fecha final que desees acotar: ")
     respuesta = logic.req_4(control, estado, fi, ff)
     print(respuesta)
-
+    end = logic.get_time()
+    print(logic.delta_time(start, end))
 
 def print_req_5(control):
     """
@@ -99,23 +109,29 @@ def print_req_6(control):
     """
         Función que imprime la solución del Requerimiento 6 en consola
     """
+    start = logic.get_time()
     idioma = input("Ingresa el idioma de la película que desees buscar: ")
     ai = int(input("Ingresa el año que desees acotar: "))
     af = int(input("Ingresa el año que desees para acotar : "))
     respuesta = logic.req_6(control, idioma, ai, af)
     print("El diccionario de los años que estas buscando es: ")
     print(respuesta)
+    end = logic.get_time()
+    print(logic.delta_time(start, end))
 
 
 def print_req_7(control):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
+    start = logic.get_time()
     prod_companie = input("Ingrese la compañia productora: ")
     ai = input("Ingrese el año inicial: ")
     af = input("Ingrese el año final: ")
     respuesta = logic.req_7(control, prod_companie, ai, af)
     print(respuesta)
+    end = logic.get_time()
+    print(logic.delta_time(start, end))
 
 
 def print_req_8(control):
